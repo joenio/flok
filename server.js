@@ -4,6 +4,7 @@ import http from "http";
 import url from "url";
 import ShareDB from "sharedb";
 import WebSocket from "ws";
+import uuid from "uuid/v1";
 import WebSocketJSONStream from "@teamwork/websocket-json-stream";
 import PubSub from "./lib/pubsub";
 
@@ -18,15 +19,53 @@ const backend = new ShareDB({
   disableSpaceDelimitedActions: true
 });
 
-// Create initial document then fire callback
-function createDoc(callback) {
-  const connection = backend.connect();
-  const doc = connection.get("flok", "foo");
+// backend.use("connect", (context, callback) => {
+//   const { clientId } = context.agent;
+//   // TODO Fetch users document
+//   // TODO send op for adding current agent clientId as userId
+//   console.log(`backend connect: ${clientId}`);
+//   callback();
+// });
 
+// backend.use("receive", (request, callback) => {
+//   console.log(" receive");
+//   console.log(request.agent.custom);
+//   callback();
+// });
+
+// backend.use("disconnect", (context, callback) => {
+//   const { clientId } = context.agent;
+//   // TODO Fetch users document
+//   // TODO send op for adding current agent clientId as userId
+  
+//   callback();
+// });
+
+function fetchOrCreate(connection, documentId, defaultValue, callback) {
+  const doc = connection.get("flok", documentId);
   doc.fetch(err => {
     if (err) throw err;
+    if (doc.type === null) {
+      doc.create(defaultValue, callback);
+      return;
+    }
     callback();
   });
+}
+
+// Create initial documents
+function createDoc(callback) {
+  const connection = backend.connect();
+
+  fetchOrCreate(connection, "users", {}, callback);
+
+  // connection.on('connected', (...args) => {
+  //   console.log(`Connected ${JSON.stringify(args)}`);
+  // });
+
+  // connection.on('stopped', (...args) => {
+  //   console.log(`Disconnected ${JSON.stringify(args)}`);
+  // });
 }
 
 function startServer() {
@@ -56,7 +95,20 @@ function startServer() {
     wss.on("connection", ws => {
       const stream = new WebSocketJSONStream(ws);
       backend.listen(stream);
+
+      const clientId = uuid();
+      console.log(`Connected: ${clientId}`);
+      stream.write({ _type: "connected", value: clientId });
+
+      stream.on("close", () => {
+        console.log(`Disconnected: ${clientId}`);
+      })
     });
+
+    // wss.on("disconnection", ws => {
+    //   console.log(`Disconnect: ${JSON.stringify(ws.clientId)}`);
+    //   removeCurrentUser()
+    // })
 
     // Prepare evaluation WebScoket server (pubsub)
     const pubSubServer = new PubSub({ wss: evalWss });
