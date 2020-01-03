@@ -1,6 +1,7 @@
 # flok-gui
 
-A cross-platform GUI application for using Flok for collaborative live coding.
+A cross-platform desktop application for using Flok for collaborative live
+coding.
 
 See [flok](https://github.com/munshkr/flok) for more.
 

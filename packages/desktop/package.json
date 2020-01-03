@@ -1,6 +1,6 @@
 {
-  "name": "flok-gui",
-  "description": "Cross-platform GUI application for using Flok for collaborative live coding",
+  "name": "flok-desktop",
+  "description": "Cross-platform desktop application for using Flok for collaborative live coding",
   "version": "0.1.4",
   "author": "Damián Silvani <munshkr@gmail.com>",
   "license": "GPL-3.0",
