@@ -1,13 +1,20 @@
 @charset "utf-8";
 
-$body-background-color: #101010;
-$body-color: #bbbbbb;
-$strong-color: #cccccc;
+// Ecosystem theme colors
+$bg: #29272b;
+$fg1: #ffffff;
+$fg2: #e47464;
+$fg3: #66606b;
+$fg4: #000000;
+$bg1: #000000;
+$bg2: #201e21;
+$bg3: #322e33;
+$bg4: #e47464;
 
-@import "bulma/bulma.sass";
+$red: #ff0000;
 
 html {
-  background-color: $body-background-color;
+  background-color: $bg1;
   overflow: hidden;
 }
 
@@ -16,11 +23,11 @@ body {
 }
 
 .title {
-  color: $strong-color;
+  color: $fg1;
 }
 
 .subtitle {
-  color: $body-color;
+  color: $fg2;
 }
 
 .editor .CodeMirror {
@@ -94,12 +101,12 @@ body {
       pre {
         padding: 0;
         background-color: transparent;
-        color: $body-color;
-        white-space: pre-wrap;       /* css-3 */
-        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-        white-space: -pre-wrap;      /* Opera 4-6 */
-        white-space: -o-pre-wrap;    /* Opera 7 */
-        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        color: $fg1;
+        white-space: pre-wrap; /* css-3 */
+        white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+        white-space: -pre-wrap; /* Opera 4-6 */
+        white-space: -o-pre-wrap; /* Opera 7 */
+        word-wrap: break-word; /* Internet Explorer 5.5+ */
       }
       pre.error {
         color: $red;
