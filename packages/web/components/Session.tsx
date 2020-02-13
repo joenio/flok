@@ -6,7 +6,7 @@ import Status from "./Status";
 import UserList from "./UserList";
 import TargetMessagesPane from "./TargetMessagesPane";
 import SessionClient from "../lib/SessionClient";
-// import HydraCanvas from "./HydraCanvas";
+import HydraCanvas from "./HydraCanvas";
 
 const MAX_LINES: number = 100;
 
@@ -238,8 +238,8 @@ class Session extends Component<Props, State> {
       showUserList,
       showTargetMessagesPane,
       messagesPaneIsTop,
-      messagesPaneIsMaximized
-      // hydraCode
+      messagesPaneIsMaximized,
+      hydraCode
     } = this.state;
     const { layout } = this.props;
 
@@ -248,23 +248,37 @@ class Session extends Component<Props, State> {
     return (
       // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
       <div>
-        {/*<HydraCanvas code={hydraCode} fullscreen />*/}
+        <HydraCanvas code={hydraCode} fullscreen />
         <Status>{status}</Status>
         {showTextEditors && (
-          <div className="columns is-gapless is-multiline">
-            {layout.editors.map(({ id, target }) => (
-              <div key={id} className="column is-4">
+          <React.Fragment>
+            <div className="columns is-gapless is-multiline">
+              {layout.editors.slice(0, 3).map(({ id, target }) => (
+                <div key={id} className="column is-4">
+                  <TextEditor
+                    editorId={id}
+                    target={target}
+                    sessionClient={sessionClient}
+                    onEvaluateCode={this.handleEvaluateCode}
+                    onEvaluateRemoteCode={this.handleEvaluateRemoteCode}
+                    onCursorActivity={this.handleCursorActivity}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="columns is-gapless is-multiline">
+              <div className="column is-12">
                 <TextEditor
-                  editorId={id}
-                  target={target}
+                  editorId="4"
+                  target="hydra"
                   sessionClient={sessionClient}
                   onEvaluateCode={this.handleEvaluateCode}
                   onEvaluateRemoteCode={this.handleEvaluateRemoteCode}
                   onCursorActivity={this.handleCursorActivity}
                 />
               </div>
-            ))}
-          </div>
+            </div>
+          </React.Fragment>
         )}
         {showUserList && <UserList users={users} />}
         {showTargetMessagesPane && messages && (
